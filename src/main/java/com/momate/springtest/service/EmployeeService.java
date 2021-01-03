@@ -1,6 +1,6 @@
 package com.momate.springtest.service;
 
-import com.momate.springtest.dao.EmployeeDao;
+import com.momate.springtest.dao.EmployeeRepository;
 import com.momate.springtest.model.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,18 +12,37 @@ import java.util.Optional;
 public class EmployeeService {
 
     @Autowired
-    private EmployeeDao dao;
+    private EmployeeRepository repository;
 
     public List<Employee> getAllEmployee() {
-        return dao.findAll();
+        return repository.findAll();
     }
 
     public Employee addEmployee(Employee e) {
-        return dao.save(e);
+        return repository.save(e);
     }
 
     public Optional<Employee> getEmployeeById(Long id) {
-        return dao.findById(id);
+        return repository.findById(id);
     }
 
+    public Employee updateEmployee(Long id, Employee newEmployee) {
+        return repository.findById(id)
+                .map(employee -> {
+                    employee.setName(newEmployee.getName());
+                    employee.setDepartmentId(newEmployee.getDepartmentId());
+                    employee.setSalary(newEmployee.getSalary());
+                    return repository.save(employee);
+                })
+                .orElseGet(()->{
+                    newEmployee.setId(id);
+                    return repository.save(newEmployee);
+                });
+    }
+
+    public void deleteEmployeeById(Long id) {
+        if(repository.existsById(id)) {
+            repository.deleteById(id);
+        }
+    }
 }
