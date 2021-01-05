@@ -1,12 +1,12 @@
 package com.momate.springtest.service;
 
 import com.momate.springtest.dao.EmployeeRepository;
+import com.momate.springtest.exception.EmployeeNotFoundException;
 import com.momate.springtest.model.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EmployeeService {
@@ -22,8 +22,9 @@ public class EmployeeService {
         return repository.save(e);
     }
 
-    public Optional<Employee> getEmployeeById(Long id) {
-        return repository.findById(id);
+    public Employee getEmployeeById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new EmployeeNotFoundException(id));
     }
 
     public Employee updateEmployee(Long id, Employee newEmployee) {
