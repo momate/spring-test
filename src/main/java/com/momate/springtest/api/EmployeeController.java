@@ -20,17 +20,15 @@ public class EmployeeController {
     @Autowired
     private EmployeeService service;
 
+    @Autowired
+    private EmployeeModelAssembler assembler;
+
     @GetMapping
     public CollectionModel<EntityModel<Employee>> getAllEmployee() {
-        List<EntityModel<Employee>> employeeList = service.getAllEmployee().stream()
-                .map(employee -> EntityModel.of(employee,
-
-                        linkTo(methodOn(EmployeeController.class).getEmployeeById(employee.getId())).withSelfRel(),
-
-                        linkTo(methodOn(EmployeeController.class).getAllEmployee()).withRel("employees")))
+        List<EntityModel<Employee>> employees = service.getAllEmployee().stream()
+                .map(assembler::toModel)
                 .collect(Collectors.toList());
-
-        return CollectionModel.of(employeeList,
+        return CollectionModel.of(employees,
                 linkTo(methodOn(EmployeeController.class).getAllEmployee()).withSelfRel());
 
     }
@@ -44,15 +42,14 @@ public class EmployeeController {
 
     @GetMapping("/{id}")
     public EntityModel<Employee> getEmployeeById(@PathVariable Long id) {
-        return EntityModel.of(service.getEmployeeById(id),
-                linkTo(methodOn(EmployeeController.class).getEmployeeById(id)).withSelfRel(),
-                linkTo(methodOn(EmployeeController.class).getAllEmployee()).withRel("employees")
+        return assembler.toModel(
+                service.getEmployeeById(id)
         );
     }
 
     @PutMapping("/{id}")
     public Employee updateEmployee(@PathVariable Long id,
-                                                @RequestBody Employee newEmployee) {
+                                   @RequestBody Employee newEmployee) {
         return service.updateEmployee(id, newEmployee);
     }
 
