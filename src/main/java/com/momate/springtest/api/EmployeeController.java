@@ -2,10 +2,13 @@ package com.momate.springtest.api;
 
 import com.momate.springtest.model.Employee;
 import com.momate.springtest.service.EmployeeService;
+import org.hibernate.EntityMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,8 +38,11 @@ public class EmployeeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Employee addEmployee(@RequestBody Employee newEmployee) {
-        return service.addEmployee(newEmployee);
+    public ResponseEntity<?> addEmployee(@RequestBody Employee newEmployee) {
+        EntityModel<Employee> entityModel =
+                assembler.toModel(service.addEmployee(newEmployee));
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(entityModel);
 
     }
 
@@ -48,15 +54,22 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
-    public Employee updateEmployee(@PathVariable Long id,
+    public ResponseEntity<?> updateEmployee(@PathVariable Long id,
                                    @RequestBody Employee newEmployee) {
-        return service.updateEmployee(id, newEmployee);
+        EntityModel<Employee> entityModel =
+                assembler.toModel(service.updateEmployee(id,newEmployee));
+        
+        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(entityModel);
+
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void deleteEmployee(@PathVariable Long id) {
+    public ResponseEntity<?> deleteEmployee(@PathVariable Long id) {
         service.deleteEmployeeById(id);
+
+        return ResponseEntity.noContent().build();
     }
 
 
