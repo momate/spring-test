@@ -11,15 +11,17 @@ public class Employee {
     @Id
     @GeneratedValue
     private Long id;
-    private String name;
+    private String firstName;
+    private String lastName;
     private Long departmentId;
     private Long salary;
 
     public Employee() {
     }
 
-    public Employee(String name, Long departmentId, Long salary) {
-        this.name = name;
+    public Employee(String firstName, String lastName, Long departmentId, Long salary) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.departmentId = departmentId;
         this.salary = salary;
     }
@@ -33,11 +35,13 @@ public class Employee {
     }
 
     public String getName() {
-        return name;
+        return this.firstName + " " + this.lastName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        String[] parts = name.split(" ");
+        this.firstName = parts[0];
+        this.lastName = parts[1];
     }
 
     public Long getDepartmentId() {
@@ -61,19 +65,20 @@ public class Employee {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return Objects.equals(id, employee.id) && Objects.equals(name, employee.name) && Objects.equals(departmentId, employee.departmentId) && Objects.equals(salary, employee.salary);
+        return Objects.equals(id, employee.id) && Objects.equals(firstName, employee.firstName) && Objects.equals(lastName, employee.lastName) && Objects.equals(departmentId, employee.departmentId) && Objects.equals(salary, employee.salary);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, departmentId, salary);
+        return Objects.hash(id, firstName, lastName, departmentId, salary);
     }
 
     @Override
     public String toString() {
         return "Employee{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", departmentId=" + departmentId +
                 ", salary=" + salary +
                 '}';
