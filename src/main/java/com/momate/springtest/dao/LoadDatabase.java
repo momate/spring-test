@@ -1,7 +1,6 @@
 package com.momate.springtest.dao;
 
 import com.momate.springtest.model.Department;
-import com.momate.springtest.model.Employee;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -16,16 +15,16 @@ public class LoadDatabase {
 
     @Bean
     CommandLineRunner initDatabase(EmployeeRepository employeeRepository,
-                                   DepartmentRepository departmentRepository){
-        Employee e1 = new Employee("Tom", "Tom", null,1000L);
-        Employee e2 = new Employee("Don", "Don", null,2000L);
+                                   DepartmentRepository departmentRepository) {
+
+        Department d1 = new Department("Big Department", "Budapest");
+        Department d2 = new Department("Small Department", "Moscow");
 
         return args -> {
-            log.info("Preloading " + employeeRepository.save(e1));
-            log.info("Preloading " + employeeRepository.save(e2));
+            log.info("Preloading " + departmentRepository.save(d1).toString());
+            log.info("Preloading " + departmentRepository.save(d2).toString());
 
-            log.info("Preloading " + departmentRepository.save(new Department("Big Department", "Budapest")));
-            log.info("Preloading " + departmentRepository.save(new Department("Small Department", "Moscow")));
+
         };
     }
 }

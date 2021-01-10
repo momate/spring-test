@@ -31,7 +31,6 @@ public class EmployeeService {
         return repository.findById(id)
                 .map(employee -> {
                     employee.setName(newEmployee.getName());
-                    employee.setDepartmentId(newEmployee.getDepartmentId());
                     employee.setSalary(newEmployee.getSalary());
                     return repository.save(employee);
                 })

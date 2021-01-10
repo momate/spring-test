@@ -2,32 +2,26 @@ package com.momate.springtest.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.util.Objects;
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Data
-public class Employee {
+public class Employee implements Serializable {
 
     @Id
     @GeneratedValue
     private Long id;
     private String firstName;
     private String lastName;
-    private Long departmentId;
     private Long salary;
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
 
     public Employee() {
     }
 
-    public Employee(String firstName, String lastName, Long departmentId, Long salary) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.departmentId = departmentId;
-        this.salary = salary;
-    }
 
     public String getName() {
         return this.firstName + " " + this.lastName;
